@@ -16,7 +16,7 @@ import java.util.Objects;
 
 public class Dot {
     private final String irsPath;
-    private final String builderPath;
+    private final File dots;
     private String fileName;
 
     /**
@@ -26,7 +26,7 @@ public class Dot {
     public Dot() throws IOException {
         fileName = "";
         irsPath = Objects.requireNonNull(getClass().getResource("/ir")).getPath();
-        builderPath = new ClassPathResource("build_dot.py").getFile().getPath();
+        dots = new ClassPathResource("dot_files").getFile();
     }
 
     /**
@@ -36,8 +36,10 @@ public class Dot {
      * @throws IOException if an I/O error occurs when executing command
      */
     public boolean generateDotFiles() throws IOException {
-        String[] runtime = {"python3", builderPath};
-        Process process = Runtime.getRuntime().exec(runtime);
+        ProcessBuilder processBuilder = new ProcessBuilder("opt", "-passes=dot-cfg", "../ir/" + fileName);
+        processBuilder.directory(dots);
+        processBuilder.inheritIO();
+        Process process = processBuilder.start();
         try {
             process.waitFor();
         } catch (InterruptedException e) {
@@ -55,26 +57,9 @@ public class Dot {
     }
 
     private void cleanDirectory() throws IOException {
-        File svgDir = new ClassPathResource("svg_files").getFile();
-        if (svgDir.exists()) {
-            FileUtils.cleanDirectory(svgDir);
+        if (dots.exists()) {
+            FileUtils.cleanDirectory(dots);
         }
-        File dotDir = new ClassPathResource("dot_files").getFile();
-        if (svgDir.exists()) {
-            FileUtils.cleanDirectory(dotDir);
-        }
-    }
-
-    private void change() throws IOException {
-        Charset charset = StandardCharsets.UTF_8;
-        String content = Files.readString(Path.of(builderPath), charset);
-        int ind = content.indexOf("/ir/")+4;
-        String name = content.substring(ind);
-        name = name.substring(0, name.indexOf("\""));
-        System.out.println(name + "\n" + fileName);
-        content = content.replaceAll(name, fileName);
-        Files.writeString(Path.of(builderPath), content, charset);
-        cleanDirectory();
     }
 
 
@@ -91,13 +76,13 @@ public class Dot {
             File newFile = new File(irsPath + "/" + fileName);
             if (newFile.createNewFile()) {
                 copy(newFile, file.getBytes());
-                change();
+                cleanDirectory();
                 System.out.println("File is created!");
                 return true;
             } else {
                 System.out.println("File already exists.");
                 copy(newFile, file.getBytes());
-                change();
+                cleanDirectory();
                 return true;
             }
         }

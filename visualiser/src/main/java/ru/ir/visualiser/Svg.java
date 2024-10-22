@@ -1,7 +1,9 @@
 package ru.ir.visualiser;
 
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.core.io.ClassPathResource;
 
+import java.io.File;
 import java.io.IOException;
 
 public class Svg {
@@ -12,7 +14,15 @@ public class Svg {
     }
 
 
+    private void cleanDirectory() throws IOException {
+        File svgDir = new ClassPathResource("svg_files").getFile();
+        if (svgDir.exists()) {
+            FileUtils.cleanDirectory(svgDir);
+        }
+    }
+
     public boolean generateSvgFiles() throws IOException {
+        cleanDirectory();
         String[] runtime = {"python3", builderPath};
         Process process = Runtime.getRuntime().exec(runtime);
         try {
