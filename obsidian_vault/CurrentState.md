@@ -39,7 +39,7 @@ int lineFromBlockId(String blockId)
 Возвращает строку в изначальном файле
 
 ```java
-String setLine(int line)
+String setLineAndGetBlockId(int line)
 ```
 Текущая функция меняется на ту, которая находится на указанной линии. Возвращает блок на линии.
 
