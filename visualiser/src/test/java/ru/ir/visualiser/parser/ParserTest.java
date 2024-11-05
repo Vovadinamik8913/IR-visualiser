@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 
@@ -23,9 +24,12 @@ public class ParserTest {
         Parser parser = new Parser();
         String content = Files.readString(Path.of(path));
         ModuleIR moduleIR = parser.parseModule(content);
-        List<FunctionIR> functions = moduleIR.getFunctions();
+        Collection<FunctionIR> functions = moduleIR.getFunctions();
+        FunctionIR function = functions.iterator().next();
+
 
         assertEquals(21, functions.size());
-
+        assertEquals(144, function.getStartLine());
+        assertEquals(167,function.getEndLine());
     }
 }
