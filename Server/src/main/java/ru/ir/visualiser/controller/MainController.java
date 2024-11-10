@@ -84,7 +84,7 @@ public class MainController {
                     );
                 }
             }
-            return ResponseEntity.ok("Файл загружен успешно");
+            return ResponseEntity.ok("ok");
         } catch (IOException | RuntimeException e) {
             System.out.println(e.getMessage());
         }
@@ -130,24 +130,4 @@ public class MainController {
         return null;
     }
 
-
-
-    @PostMapping(value = "/get/ir")
-    @ResponseBody
-    public byte[] getIr(
-            @Parameter(description = "Ключ") @RequestParam("key") String key,
-            @Parameter(description = "Имя файла") @RequestParam("filename") String filename
-    ) {
-        String folder = FileWorker.getFolderName(filename);
-        String path = key + File.separator + folder + "/ir_files/" + folder + File.separator + filename;
-        try {
-            // Convert the file to a byte array
-            Path dirPath = Paths.get(FileWorker.absolutePath(path));
-            byte[] byteArray = Files.readAllBytes(dirPath);
-            return byteArray;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 }
