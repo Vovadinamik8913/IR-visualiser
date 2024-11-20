@@ -32,8 +32,60 @@ public class MainController {
     }
 
     @Operation(summary = "Отправка файла")
-    @PostMapping(value = "/build")
-    public ResponseEntity<String> buildSVG(
+    @PostMapping(value = "/build/path")
+    public ResponseEntity<String> buildSVGByPath(
+            @Parameter(description = "Ключ") @RequestParam("folder") String folder,
+            @Parameter(description = "Имя opt") @RequestParam("opt") int opt,
+            @Parameter(description = "Путь к файлу") @RequestParam("filePath") String filePath
+    ) {
+        try {
+            File file = new File(filePath);
+            String filename = file.getName();
+            String folderName = FileWorker.getFolderName(filename);
+            String path = folder + File.separator + folderName;
+            String optPath = Config.getInstance().getOptsPath()[opt];
+            Ir ir = new Ir(filename);
+            irService.create(ir);
+            FileWorker.createPath(
+                    "",
+                    path
+            );
+            FileWorker.createPaths(path,
+                    new String[]{
+                            "dot_files/"+folderName,
+                            "ir_files/"+folderName,
+                            "svg_files/"+folderName
+                    }
+            );
+            FileWorker.addFile(path+"/ir_files/"+folderName,
+                    filename
+            );
+            FileWorker.copy(path+"/ir_files/"+folderName,
+                    filename,
+                    Files.readAllBytes(file.toPath())
+            );
+            if (Opt.validateOpt(optPath)) {
+                if (Opt.generateDotFiles(
+                        optPath,
+                        FileWorker.absolutePath(path+"/dot_files/"+folderName),
+                        filename
+                )) {
+                    Svg.generateSvgFiles(
+                            FileWorker.absolutePath(path + "/dot_files/" + folderName),
+                            FileWorker.absolutePath(path + "/svg_files/" + folderName)
+                    );
+                }
+            }
+            return ResponseEntity.ok("ok");
+        } catch (IOException | RuntimeException e) {
+            System.out.println(e.getMessage());
+        }
+        return (ResponseEntity<String>) ResponseEntity.badRequest();
+    }
+
+    @Operation(summary = "Отправка файла")
+    @PostMapping(value = "/build/file")
+    public ResponseEntity<String> buildSVGByFile(
             @Parameter(description = "Ключ") @RequestParam("folder") String folder,
             @Parameter(description = "Имя opt") @RequestParam("opt") int opt,
             @Parameter(description = "Файл для загрузки", required = true) @RequestParam("file") MultipartFile file
