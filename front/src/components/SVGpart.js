@@ -22,7 +22,7 @@ const SVGpart = ({ title, svgContent }) => {
         <div className="window">
             <h2>{title}</h2>
             {svgContent ? (
-                <div className="svg-wi"
+                <div className="svg-win"
                     onClick={handleSvgClick}
                     dangerouslySetInnerHTML={{ __html: svgContent }}
                      style={{cursor: "pointer"}}

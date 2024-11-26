@@ -1,8 +1,10 @@
 import React, {useState} from 'react';
 
-const Header = ({ onFileUpload, onBuildRequest }) => {
+const Header = ({ onFileUpload, onDoneRequest,  options, onBuildRequest }) => {
     const [keyName, setKeyName] = useState(''); //key-name
     const [selectedFile, setSelectedFile] = useState(null); // file
+    const [selectedOption, setSelectedOption] = useState('');// выбранное значение
+    const [funcName, setFuncName] = useState('');
 
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
@@ -18,10 +20,24 @@ const Header = ({ onFileUpload, onBuildRequest }) => {
         setKeyName(event.target.value); // Обновляем ключ при вводе
     };
 
-    // Обработка нажатия на кнопку Build
-    const handleBuildClick = () => {
+    const handleDropdownChange = (event) => {
+        setSelectedOption(event.target.value);// Обновляем выбранное значение
+        setFuncName(event.target.value);
+    };
+
+    // Обработка нажатия на кнопку Готово
+    const handleDoneClick = () => {
         if (keyName && selectedFile) {
-            onBuildRequest(keyName, selectedFile); // Передаем ключ и файл для запроса
+            onDoneRequest(keyName, selectedFile); // Передаем ключ и файл для запроса
+        } else {
+            alert('Введите имя папки и загрузите .ll файл');
+        }
+    };
+
+    // Обработка нажатия на кнопку Получить свг
+    const handleBuildClick = () => {
+        if (keyName && selectedFile && funcName) {
+            onBuildRequest(keyName, selectedFile, funcName); // Передаем ключ, файл и имя функции для запроса
         } else {
             alert('Введите имя папки и загрузите .ll файл');
         }
@@ -35,15 +51,32 @@ const Header = ({ onFileUpload, onBuildRequest }) => {
                     id="file-upload"
                     onChange={handleFileUpload}
                     style={{display: 'none'}}/>
-                <label htmlFor="file-upload" className="upload-button">Upload File</label>
+                <label htmlFor="file-upload" className="upload-button">Загрузить файл</label>
                 <input
                     type="text"
                     value={keyName}
                     onChange={handleKeyChange}
-                    placeholder="Enter key name"
+                    placeholder="Введите имя папки"
                     className="key-input"
                 />
-                <button onClick={handleBuildClick} className="build-button">Build</button>
+                <button onClick={handleDoneClick} className="build-button">Готово</button>
+                <select
+                    value={selectedOption}
+                    onChange={handleDropdownChange}
+                    className="dropdown"
+                >
+                    <option value="start" disabled hidden>Выберите функцию</option>
+                    {options.length > 0 ? (
+                        options.map((option, index) => (
+                            <option key={index} value={option}>
+                                {option}
+                            </option>
+                        ))
+                    ) : (
+                        <option disabled>Нет доступных функций</option>
+                    )}
+                </select>
+                <button onClick={handleBuildClick} className="build-button">Получить SVG</button>
             </div>
             <h1 className="header-title">IR VISUALIZER</h1>
         </header>

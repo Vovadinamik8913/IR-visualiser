@@ -1,16 +1,19 @@
-import React from 'react';
+import React, {useState} from 'react';
 
-const TXTpart = ({ title, content }) => {
+const TXTpart = ({ title, content, onLineClick }) => {
+    const [lineIndex, setLineIndex] = useState(null);
 
     const handleLineClick = (index) => {
         console.log(`Нажата строка ${index + 1}`);
+        setLineIndex(index);
+        onLineClick(lineIndex)
     };
 
     return (
         <div className="window" >
             <h2>{title}</h2>
             {content ? (
-                <pre> <code>
+                <pre className="txt-win"> <code>
                     {content.split('\n').map((line, index) => (
                         <div key={index}
                              onClick={() => handleLineClick(index)}
