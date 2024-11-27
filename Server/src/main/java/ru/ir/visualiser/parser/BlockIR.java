@@ -1,47 +1,24 @@
 package ru.ir.visualiser.parser;
+import lombok.Getter;
+import lombok.Setter;
 
 public class BlockIR {
     private boolean initial;
-    private String textRow;
+    private String textRaw;
+    @Setter @Getter
     private String labelIR;
+    @Setter @Getter
     private String svgID;
+    @Getter
     private int startLine;
+    @Getter
     private int endLine;
 
-    BlockIR(boolean initial, String textRow, int startLine, int endLine) {
+    BlockIR(boolean initial, String textRaw, int startLine, int endLine) {
         this.initial = initial;
-        this.textRow = textRow;
+        this.textRaw = textRaw;
         this.startLine = startLine;
         this.endLine = endLine;
     }
 
-
-    public void setLabelIR(String labelIR) {
-        this.labelIR = labelIR;
-    }
-
-    public void setSvgID(String svgID) {
-        this.svgID = svgID;
-    }
-
-    public int getStartLine(int startLine) {
-        return startLine;
-    }
-    public int getEndLine(int endLine) {
-        return endLine;
-    }
-
-    /**
-     * Label of Block in the IR function that is part of the IR syntax.
-     */
-    public String label() {
-        return labelIR;
-    }
-
-    /**
-     * Id of the SVG element that represents this block.
-     */
-    public String svgId() {
-        return svgID;
-    }
 }

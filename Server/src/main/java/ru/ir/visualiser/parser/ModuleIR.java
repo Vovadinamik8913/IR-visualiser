@@ -1,8 +1,11 @@
 package ru.ir.visualiser.parser;
 
+import lombok.Getter;
+
 import java.util.*;
 
 public class ModuleIR {
+    @Getter
     private String moduleName;
     private String moduleTextRaw;
     private Map<String,FunctionIR> NameToFunctions = new HashMap<>();
@@ -29,10 +32,6 @@ public class ModuleIR {
 
     public String getNameByFunction(FunctionIR function) {
         return FunctionsToName.get(function);
-    }
-
-    public String getModuleName() {
-        return moduleName;
     }
 
     public Collection<FunctionIR> getFunctions() {

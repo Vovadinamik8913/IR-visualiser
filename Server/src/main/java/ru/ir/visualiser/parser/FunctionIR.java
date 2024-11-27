@@ -1,14 +1,24 @@
 package ru.ir.visualiser.parser;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class FunctionIR {
+    @Getter
     private String functionName;
     private List<String> parameters;
+    @Getter
     private String functionTextRaw;
+    @Getter
     private List<BlockIR> blocks;
+    @Getter
+    @Setter
     private int startLine;
+    @Getter
+    @Setter
     private int endLine;
 
 
@@ -23,21 +33,6 @@ public class FunctionIR {
 
     }
 
-    public void setStartLine(int startLine) {
-        this.startLine = startLine;
-    }
-
-    public int getStartLine() {
-        return startLine;
-    }
-
-    public void setEndLine(int endLine) {
-        this.endLine = endLine;
-    }
-    public int getEndLine() {
-        return endLine;
-    }
-
     public void addParameter(String parameter) {
         parameters.add(parameter);
     }
@@ -46,19 +41,4 @@ public class FunctionIR {
         blocks.add(block);
     }
 
-    public List<BlockIR> getBlocks() {
-        return blocks;
-    }
-
-
-    /**
-     * Whole text of a function.
-     */
-    public String rawText() {
-        return functionTextRaw;
-    }
-
-    public String getFunctionName() {
-        return functionName;
-    }
 }
