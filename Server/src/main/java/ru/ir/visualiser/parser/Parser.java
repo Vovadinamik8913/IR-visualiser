@@ -3,7 +3,6 @@ package ru.ir.visualiser.parser;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 public class Parser {
 
     public static int getLineNumber(String text, int index) {

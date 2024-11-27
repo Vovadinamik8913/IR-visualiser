@@ -23,6 +23,7 @@ public class LineToSvgController {
     Parser parser = new Parser();
     ModuleIR current;
     boolean parsed = false;
+    String filename;
 
 
     /**
@@ -41,6 +42,8 @@ public class LineToSvgController {
     ) throws IOException {
         String fileContent = "";
         if (!parsed) {
+            String filenameWithExtension = file.getOriginalFilename();
+            filename = FileWorker.getFolderName(filenameWithExtension);
             fileContent = new String(file.getBytes(), StandardCharsets.UTF_8);
             current = parser.parseModule(fileContent);
             parsed = true;
@@ -80,8 +83,8 @@ public class LineToSvgController {
             return null;
         }
 
-        String path = FileWorker.absolutePath("") + File.separator + folder + File.separator + folder +
-                "/svg_files/" + folder + "/." + function.getFunctionName() + ".svg";
+        String path = FileWorker.absolutePath("") + File.separator + folder + File.separator + filename +
+                "/svg_files/" + filename + "/." + function.getFunctionName() + ".svg";
         try {
             Path pathFile = Paths.get(path);
             return Files.readAllBytes(pathFile);
