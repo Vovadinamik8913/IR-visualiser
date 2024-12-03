@@ -17,6 +17,12 @@ public class Ir {
     private Long id;
     private String optimization;
     private String filename;
+    @Setter
+    private String dotPath;
+    @Setter
+    private String svgPath;
+    @Setter
+    private String irPath;
     @OneToOne @JoinColumn(name = "id")
     @Setter
     private Ir parent;
@@ -40,4 +46,6 @@ public class Ir {
     public Ir() {
 
     }
+
+
 }
