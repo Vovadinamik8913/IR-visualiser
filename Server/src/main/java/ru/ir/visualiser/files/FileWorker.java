@@ -13,7 +13,6 @@ public class FileWorker {
         String[] folders = foldersOrder.split("/");
         String newPath = path;
         for (String folder : folders) {
-
             addFolder(newPath, folder);
             newPath += File.separator + folder;
         }
@@ -23,7 +22,6 @@ public class FileWorker {
         for (String foldersOrder : foldersOrders) {
             createPath(path, foldersOrder);
         }
-
     }
 
     public static String getFolderName(String filename) {
@@ -39,32 +37,24 @@ public class FileWorker {
     }
 
     public static void addFolder(String path, String folderName) {
-        File newDir = new File(absolutePath(path) + File.separator + folderName);
+        File newDir = new File(path + File.separator + folderName);
         if (!newDir.exists()) {
             newDir.mkdirs();
         }
     }
 
-    public static void addFolders(String path, String[] foldersName) {
-        for (String folder : foldersName) {
-            addFolder(path, folder);
-        }
-    }
-
-    public static void addFile(String path, String fileName) throws IOException {
-        File newFile = new File(absolutePath(path) + File.separator + fileName);
-        newFile.createNewFile();
-    }
-
     public static void cleanDirectory(String path) throws IOException {
-        File dir = new File(absolutePath(path));
+        File dir = new File(path);
         if (dir.exists()) {
             FileUtils.cleanDirectory(dir);
         }
     }
 
     public static void copy(String path, String fileName, byte[] bytes) throws IOException {
-        File file = new File(absolutePath(path) + File.separator + fileName);
+        File file = new File(path + File.separator + fileName);
+        if (!file.exists()) {
+            file.createNewFile();
+        }
         BufferedOutputStream stream =
                 new BufferedOutputStream(new FileOutputStream(file));
         stream.write(bytes);
