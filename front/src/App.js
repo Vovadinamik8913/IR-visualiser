@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import Header from './components/Header';
 import SVGpart from './components/SVGpart';
 import TXTpart from "./components/TXTpart";
 import './App.css';
 
 function App() {
-    const [llContent, setLlContent] = useState(null);
-    const [options, setOptions] = useState([]);// Содержимое .ll файла
+    const [llContent, setLlContent] = useState(null); // Содержимое .ll файла
+    const [listOfFunctions, setListOfFunctions] = useState([]);
     const [svgContent, setSvgContent] = useState(''); // Содержимое SVG
     const [folderName, setFolderName] = useState('');
+    const [fileName, setFileName] = useState('');
+    const [funcFromLine, setFuncFromLine] = useState('');
 
     // Функция для загрузки .ll файла
     const handleFileUpload = (file) => {
@@ -16,6 +18,9 @@ function App() {
             const reader = new FileReader();
             reader.onload = (event) => {
                 setLlContent(event.target.result); // Сохраняем текстовое содержимое .ll файла
+                setFileName(file.name);
+                setSvgContent('');
+                setListOfFunctions([]);
             };
             reader.readAsText(file);
         } else {
@@ -23,36 +28,36 @@ function App() {
         }
     };
 
-    // Функция для осужествления запросов
-    const handleDoneRequest = async (keyName, file) => {
-        setFolderName(keyName);
-        try {
-            const formData = new FormData();
-            formData.append("folder", keyName);
-            formData.append("opt", 0);
-            formData.append("file", file);
 
-            const doneResponse = await fetch('http://localhost:8080/llvm/build/file', {
+    const handleDoneRequest = async (folder, file) => {
+        setFolderName(folder);
+        try {
+            const buildFormData = new FormData();
+            buildFormData.append("folder", folder);
+            buildFormData.append("opt", 0);
+            buildFormData.append("file", file);
+
+            const buildResponse = await fetch('http://localhost:8080/llvm/build/file', {
                 method: 'POST',
-                body: formData,
+                body: buildFormData,
             });
 
-            if (doneResponse.ok) {
-                const doneRes = await doneResponse.text();
+            if (buildResponse.ok) {
+                const doneRes = await buildResponse.text();
 
-                if(doneRes === 'ok') {
-                    const getSvgsFormData = new FormData();
-                    getSvgsFormData.append("folder", keyName);
-                    getSvgsFormData.append("filename", file.name);
+                if (doneRes === 'ok') {
+                    const getFunctionsFormData = new FormData();
+                    getFunctionsFormData.append("folder", folder);
+                    getFunctionsFormData.append("filename", file.name);
 
                     const getSvgsResponse = await fetch('http://localhost:8080/llvm/get/functions', {
                         method: 'POST',
-                        body: getSvgsFormData,
+                        body: getFunctionsFormData,
                     });
                     const svgsNames = await getSvgsResponse.json()
-                    setOptions(svgsNames);
+                    setListOfFunctions(svgsNames);
                 } else {
-                alert('Ошибка: не удалось получить имена функций');
+                    alert('Ошибка: не удалось получить имена функций');
                 }
             } else {
                 alert('Произошла ошибка при отправке файла');
@@ -69,17 +74,17 @@ function App() {
                 method: 'POST',
                 body: parseFormData,
             });
-        }catch (error) {
+        } catch (error) {
             console.error('Ошибка запроса:', error);
             alert('Произошла ошибка при выполнении запроса "/fromline/parse"');
         }
     };
 
-    const handleBuildRequest = async (keyName, file, funcName) => {
+    const handleBuildRequest = async (funcName) => {
         try {
             const svgFormData = new FormData();
-            svgFormData.append("folder", keyName);
-            svgFormData.append("filename", file.name);
+            svgFormData.append("folder", folderName);
+            svgFormData.append("filename", fileName);
             svgFormData.append("svgname", funcName);
             const svgResponse = await fetch('http://localhost:8080/llvm/get/svg', {
                 method: 'POST',
@@ -87,7 +92,7 @@ function App() {
             });
             const svgText = await svgResponse.text();
             setSvgContent(svgText);
-
+            setFuncFromLine('');
         } catch (error) {
             console.error('Ошибка запроса:', error);
             alert('Произошла ошибка при выполнении запроса');
@@ -104,7 +109,6 @@ function App() {
                 body: lineFormData,
             });
             const svgText = await svgResponse.text();
-            console.log(svgText);
             setSvgContent(svgText);
 
         } catch (error) {
@@ -117,7 +121,8 @@ function App() {
         <div className="App">
             <Header onFileUpload={handleFileUpload}
                     onDoneRequest={handleDoneRequest}
-                    options={options}
+                    functions={listOfFunctions}
+                    funcFromLIne={funcFromLine}
                     onBuildRequest={handleBuildRequest}
             />
             <div className="main-container">
@@ -126,7 +131,7 @@ function App() {
                     content={llContent}
                     onLineClick={handleLineClick}
                 />
-                <SVGpart title="SVG" svgContent={svgContent} />
+                <SVGpart title="SVG" svgContent={svgContent}/>
             </div>
         </div>
     );
