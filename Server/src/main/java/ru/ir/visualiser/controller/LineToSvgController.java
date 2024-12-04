@@ -2,9 +2,10 @@ package ru.ir.visualiser.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import ru.ir.visualiser.files.FileWorker;
+import ru.ir.visualiser.files.model.Ir;
+import ru.ir.visualiser.files.model.IrService;
 import ru.ir.visualiser.parser.FunctionIR;
 import ru.ir.visualiser.parser.ModuleIR;
 import ru.ir.visualiser.parser.Parser;
@@ -14,41 +15,44 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/fromline")
 public class LineToSvgController {
+
+    private final IrService irService;
     Parser parser = new Parser();
     ModuleIR current;
-    boolean parsed = false;
     String filename;
 
 
     /**
      * Parses .ll file into ModuleIr, FunctionIR, BlockIR
      *
-     * @param file - .ll file to be parsed
+     * @param id - id of .ll file to be parsed
      *
-     * @return - String, representing a file containment
+     * @return - String, respresenting result of the operation
      *
-     * @throws IOException - if cant access file
      */
     @Operation(summary = "initial parsing of .ll")
     @PostMapping(value = "/parse")
     public String parse(
-            @Parameter(description = ".ll file", required = true) @RequestParam("file") MultipartFile file
-    ) throws IOException {
-        String fileContent = "";
-        if (!parsed) {
-            String filenameWithExtension = file.getOriginalFilename();
-            filename = FileWorker.getFolderName(filenameWithExtension);
-            fileContent = new String(file.getBytes(), StandardCharsets.UTF_8);
-            current = parser.parseModule(fileContent);
-            parsed = true;
+            @Parameter(description = ".ll file id", required = true) @RequestParam("id") Long id
+    ) {
+        try {
+            Ir ir = irService.getById(id);
+            Path path = new File(ir.getIrPath() + File.separator + ir.getFilename()).toPath();
+            String content = Files.readString(path, StandardCharsets.UTF_8);
+            filename = String.valueOf(path.getFileName());
+            current = parser.parseModule(content);
+            return "Parsed " + filename ;
         }
-        return fileContent ;
+        catch (Exception e) {
+            return  "Something went wrong";
+        }
+
     }
 
 
@@ -63,7 +67,7 @@ public class LineToSvgController {
     @Operation(summary = "send svg corresponding to a line")
     @PostMapping(value = "/get/svg")
     @ResponseBody
-    public byte[] getSvg(
+    public String getSvg(
             @Parameter(description = "Номер строки") @RequestParam("line") int line,
             @Parameter(description = "Ключ") @RequestParam("folder") String folder
             ) {
@@ -83,14 +87,6 @@ public class LineToSvgController {
             return null;
         }
 
-        String path = FileWorker.absolutePath("") + File.separator + folder + File.separator + filename +
-                "/svg_files/" + filename + "/." + function.getFunctionName() + ".svg";
-        try {
-            Path pathFile = Paths.get(path);
-            return Files.readAllBytes(pathFile);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-        return null;
+        return function.getFunctionName();
     }
 }

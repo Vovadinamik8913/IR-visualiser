@@ -53,9 +53,9 @@ public class MainController {
         String optPath = Config.getInstance().getOptsPath()[opt];
 
         Ir ir = new Ir(filename);
-        ir.setIrPath(path + "ir_files/" + folderName);
-        ir.setSvgPath(path + "svg_files/" + folderName);
-        ir.setDotPath(path + "dot_files/" + folderName);
+        ir.setIrPath(path + "/ir_files/" + folderName);
+        ir.setSvgPath(path + "/svg_files/" + folderName);
+        ir.setDotPath(path + "/dot_files/" + folderName);
         irService.create(ir);
 
         FileWorker.createPath(path, folder + File.separator + folderName);
