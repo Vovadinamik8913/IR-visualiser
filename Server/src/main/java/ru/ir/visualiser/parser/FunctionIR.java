@@ -6,6 +6,10 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class that holds a FunctionIr
+ * with some info about it.
+ */
 public class FunctionIR {
     @Getter
     private String functionName;
