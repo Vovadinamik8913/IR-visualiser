@@ -1,0 +1,21 @@
+name: CI
+
+# Controls when the workflow will run
+on:
+  pull_request:
+    branches: [ "main", "backend", "inwork" ]  
+  workflow_dispatch:
+
+jobs:
+  checkstyle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Run check style
+        uses: nikitasavinov/checkstyle-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          checkstyle_config: '.github/google_checks.xml'
+          reporter: 'github-pr-check'
