@@ -4,6 +4,10 @@ import lombok.Getter;
 
 import java.util.*;
 
+/**
+ * Class that holds a ModuleIr
+ * with some info about it.
+ */
 public class ModuleIR {
     @Getter
     private String moduleName;

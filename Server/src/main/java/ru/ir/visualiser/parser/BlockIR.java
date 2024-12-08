@@ -2,6 +2,11 @@ package ru.ir.visualiser.parser;
 import lombok.Getter;
 import lombok.Setter;
 
+
+/**
+ * Class for blockIr.
+ *
+ */
 public class BlockIR {
     private boolean initial;
     private String textRaw;
