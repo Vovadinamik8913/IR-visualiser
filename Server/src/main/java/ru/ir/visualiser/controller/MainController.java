@@ -136,7 +136,7 @@ public class MainController {
         Ir ir = irService.getById(id);
         String path = ir.getSvgPath() + "/." + functionName + ".svg";
         try {
-            Path dirPath = Paths.get(FileWorker.absolutePath(path));
+            Path dirPath = Paths.get(path);
             return ResponseEntity.ok(Files.readAllBytes(dirPath));
         } catch (IOException e) {
             System.out.println(e.getMessage());
