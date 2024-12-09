@@ -58,7 +58,6 @@ public class MainController {
         ir.setDotPath(path + "/dot_files/" + folderName);
         irService.create(ir);
 
-        FileWorker.createPath(path, folder + File.separator + folderName);
         FileWorker.createPaths(path,
                 new String[]{
                         "dot_files/"+folderName,
