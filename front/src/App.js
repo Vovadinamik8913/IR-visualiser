@@ -117,6 +117,23 @@ function App() {
             const svgName = await svgResponse.text();
             setFuncFromLine(svgName);
 
+            try {
+                const svgFormData = new FormData();
+                svgFormData.append("file", irId);
+                svgFormData.append("function", funcFromLine);
+                const svgResponse = await fetch('http://localhost:8080/files/get/svg', {
+                    method: 'POST',
+                    body: svgFormData,
+                });
+                const svgText = await svgResponse.text();
+                console.log(svgResponse);
+                setSvgContent(svgText);
+                setFuncFromLine('');
+            } catch (error) {
+                console.error('Ошибка запроса:', error);
+                alert('Произошла ошибка при выполнении запроса');
+            }
+
         } catch (error) {
             console.error('Ошибка запроса:', error);
             alert('Произошла ошибка при выполнении запроса');

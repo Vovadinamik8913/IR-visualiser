@@ -11,7 +11,7 @@ const TXTpart = ({ title, content, onLineClick }) => {
     const handleLineClick = (index) => {
         console.log(`Нажата строка ${index + 1}`);
         setLineIndex(index);
-        onLineClick(lineIndex)
+        onLineClick(lineIndex);
     };
 
     return (
