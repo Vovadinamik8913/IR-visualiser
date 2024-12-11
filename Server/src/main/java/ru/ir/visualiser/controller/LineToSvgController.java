@@ -2,12 +2,13 @@ package ru.ir.visualiser.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import ru.ir.visualiser.files.FileWorker;
 import ru.ir.visualiser.parser.FunctionIR;
 import ru.ir.visualiser.parser.ModuleIR;
-import ru.ir.visualiser.parser.Parser;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,40 +18,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import ru.ir.visualiser.files.model.Ir;
+import ru.ir.visualiser.files.model.IrService;
+
 @RestController
 @RequestMapping("/fromline")
 public class LineToSvgController {
-    Parser parser = new Parser();
-    ModuleIR current;
-    boolean parsed = false;
-    String filename;
-
-
-    /**
-     * Parses .ll file into ModuleIr, FunctionIR, BlockIR
-     *
-     * @param file - .ll file to be parsed
-     *
-     * @return - String, representing a file containment
-     *
-     * @throws IOException - if cant access file
-     */
-    @Operation(summary = "initial parsing of .ll")
-    @PostMapping(value = "/parse")
-    public String parse(
-            @Parameter(description = ".ll file", required = true) @RequestParam("file") MultipartFile file
-    ) throws IOException {
-        String fileContent = "";
-        if (!parsed) {
-            String filenameWithExtension = file.getOriginalFilename();
-            filename = FileWorker.getFolderName(filenameWithExtension);
-            fileContent = new String(file.getBytes(), StandardCharsets.UTF_8);
-            current = parser.parseModule(fileContent);
-            parsed = true;
-        }
-        return fileContent ;
-    }
-
+    @Autowired
+    private IrService irService;
 
     /**
      *Method to get svg from line
@@ -65,13 +42,12 @@ public class LineToSvgController {
     @ResponseBody
     public byte[] getSvg(
             @Parameter(description = "Номер строки") @RequestParam("line") int line,
-            @Parameter(description = "Ключ") @RequestParam("folder") String folder
+            @Parameter(description = "Ключ") @RequestParam("id") Long id
             ) {
-        if(current == null) {
-            System.out.println("Nothing parsed yet");
-            return null;
-        }
-        Collection<FunctionIR> functions = current.getFunctions();
+        Ir ir = irService.getById(id);
+        ModuleIR module = ir.getModule();
+
+        Collection<FunctionIR> functions = module.getFunctions();
         FunctionIR function = null;
         for(FunctionIR functionNow : functions) {
             if(functionNow.getStartLine() <= line && functionNow.getEndLine() >= line) {
@@ -83,8 +59,7 @@ public class LineToSvgController {
             return null;
         }
 
-        String path = FileWorker.absolutePath("") + File.separator + folder + File.separator + filename +
-                "/svg_files/" + filename + "/." + function.getFunctionName() + ".svg";
+        String path = ir.getSvgPath() + "/." + function.getFunctionName() + ".svg";
         try {
             Path pathFile = Paths.get(path);
             return Files.readAllBytes(pathFile);
