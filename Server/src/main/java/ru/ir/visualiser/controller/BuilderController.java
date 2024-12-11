@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
 import ru.ir.visualiser.files.Config;
 import ru.ir.visualiser.files.FileWorker;
 import ru.ir.visualiser.files.llvm.Opt;
@@ -18,7 +19,11 @@ import ru.ir.visualiser.files.model.IrService;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+
+import ru.ir.visualiser.parser.ModuleIR;
+import ru.ir.visualiser.parser.Parser;
 
 @RestController
 @RequiredArgsConstructor
@@ -50,7 +55,11 @@ public class BuilderController {
         ir.setIrPath(path);
         ir.setSvgPath(path + "/svg_files");
         ir.setDotPath(path + "/dot_files");
-        irService.create(ir);
+
+        ModuleIR module = Parser.parseModule(new String(content, StandardCharsets.UTF_8));
+        ir.setModule(module);
+
+        irService.create(ir, module);
 
         FileWorker.createPaths(path,
                 new String[]{

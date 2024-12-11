@@ -39,7 +39,7 @@ public class Parser {
      *
      * @return ModuleIR
      */
-    public ModuleIR parseModule(String input) {
+    public static ModuleIR parseModule(String input) {
         String moduleID = "";
         String regexModuleName = "; ModuleID = (.*)";
         Pattern patternName = Pattern.compile(regexModuleName);
@@ -77,7 +77,7 @@ public class Parser {
      *
      * @return FunctionIR
      */
-    private FunctionIR parseFunction(String input, int startLine, int endLine) {
+    private static FunctionIR parseFunction(String input, int startLine, int endLine) {
         String regexFuncName = "(define|declare)[^@]* @(\\w*)";
         Pattern patternName = Pattern.compile(regexFuncName);
 
@@ -93,14 +93,14 @@ public class Parser {
         Pattern patternBlock = Pattern.compile(regexBlock);
         matcher = patternBlock.matcher(input);
         while (matcher.find()) {
-            if(matcher.group(1) != null) {
+            if (matcher.group(1) != null) {
                 functionIR.addBlock(parseBlock(matcher.group(1), true,
-                           startLine + getLineNumber(input, matcher.start()),
-                            startLine + getLineNumber(input, matcher.end())));
+                        startLine + getLineNumber(input, matcher.start()),
+                        startLine + getLineNumber(input, matcher.end())));
                 continue;
             }
             functionIR.addBlock(parseBlock(matcher.group(2), false,
-                       startLine + matcher.start(), startLine + matcher.end()));
+                    startLine + matcher.start(), startLine + matcher.end()));
 
         }
         return functionIR;
@@ -119,7 +119,7 @@ public class Parser {
      *
      * @return - BlockIR
      */
-    private BlockIR parseBlock(String input, boolean initial, int startLine, int endLine) {
+    private static BlockIR parseBlock(String input, boolean initial, int startLine, int endLine) {
         if (initial) {
             return new BlockIR(true, input, startLine, endLine);
         }
