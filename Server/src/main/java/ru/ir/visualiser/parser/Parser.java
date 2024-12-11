@@ -3,6 +3,7 @@ package ru.ir.visualiser.parser;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 public class Parser {
 
     public static int getLineNumber(String text, int index) {
@@ -14,12 +15,13 @@ public class Parser {
         }
         return line;
     }
-    public ModuleIR parseModule(String input) {
+
+    public static ModuleIR parseModule(String input) {
         String moduleID = "";
         String regexModuleName = "; ModuleID = (.*)";
         Pattern patternName = Pattern.compile(regexModuleName);
         Matcher matcher = patternName.matcher(input);
-        if(matcher.find()) {
+        if (matcher.find()) {
             moduleID = matcher.group(1);
         }
         String regexFunc = "(; Function Attrs: .*\\n)?(define[\\s\\S]*?\\}|declare.*\\n)";
@@ -40,13 +42,13 @@ public class Parser {
         return moduleIR;
     }
 
-    public FunctionIR parseFunction(String input, int startLine, int endLine) {
+    private static FunctionIR parseFunction(String input, int startLine, int endLine) {
         String regexFuncName = "(define|declare)[^@]* @(\\w*)";
         Pattern patternName = Pattern.compile(regexFuncName);
 
         Matcher matcher = patternName.matcher(input);
         String functionID = "";
-        if(matcher.find()) {
+        if (matcher.find()) {
             functionID = matcher.group(2);
         }
 
@@ -56,20 +58,20 @@ public class Parser {
         Pattern patternBlock = Pattern.compile(regexBlock);
         matcher = patternBlock.matcher(input);
         while (matcher.find()) {
-            if(matcher.group(1) != null) {
+            if (matcher.group(1) != null) {
                 functionIR.addBlock(parseBlock(matcher.group(1), true,
-                           startLine + getLineNumber(input, matcher.start()),
-                            startLine + getLineNumber(input, matcher.end())));
+                        startLine + getLineNumber(input, matcher.start()),
+                        startLine + getLineNumber(input, matcher.end())));
                 continue;
             }
             functionIR.addBlock(parseBlock(matcher.group(2), false,
-                       startLine + matcher.start(), startLine + matcher.end()));
+                    startLine + matcher.start(), startLine + matcher.end()));
 
         }
         return functionIR;
     }
 
-    public BlockIR parseBlock(String input, boolean initial, int startLine, int endLine) {
+    private static BlockIR parseBlock(String input, boolean initial, int startLine, int endLine) {
         if (initial) {
             return new BlockIR(initial, input, startLine, endLine);
         }
@@ -77,7 +79,7 @@ public class Parser {
         String regexId = "(\\d+):";
         Pattern patternId = Pattern.compile(regexId);
         Matcher matcher = patternId.matcher(input);
-        if(matcher.find()) {
+        if (matcher.find()) {
             blockIR.setLabelIR(matcher.group(1));
         }
         return blockIR;

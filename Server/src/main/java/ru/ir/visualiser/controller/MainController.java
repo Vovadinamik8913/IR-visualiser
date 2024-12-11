@@ -2,10 +2,12 @@ package ru.ir.visualiser.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import ru.ir.visualiser.files.Config;
 import ru.ir.visualiser.files.FileWorker;
 import ru.ir.visualiser.files.llvm.Opt;
@@ -15,12 +17,16 @@ import ru.ir.visualiser.files.model.IrService;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import ru.ir.visualiser.parser.ModuleIR;
+import ru.ir.visualiser.parser.Parser;
 
 @RestController
 @RequestMapping("/files")
@@ -56,7 +62,11 @@ public class MainController {
         ir.setIrPath(path + "ir_files/" + folderName);
         ir.setSvgPath(path + "svg_files/" + folderName);
         ir.setDotPath(path + "dot_files/" + folderName);
-        irService.create(ir);
+
+        ModuleIR module = Parser.parseModule(new String(content, StandardCharsets.UTF_8));
+        ir.setModule(module);
+
+        irService.create(ir, module);
 
         FileWorker.createPath(path, folder + File.separator + folderName);
         FileWorker.createPaths(path,

@@ -1,14 +1,21 @@
 package ru.ir.visualiser.parser;
 
+import jakarta.persistence.*;
 import lombok.Getter;
-
 import java.util.*;
 
+@Entity
+@Table(name = "module")
 public class ModuleIR {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
     @Getter
     private String moduleName;
     private String moduleTextRaw;
-    private Map<String,FunctionIR> NameToFunctions = new HashMap<>();
+    private Map<String, FunctionIR> NameToFunctions = new HashMap<>();
     private Map<FunctionIR, String> FunctionsToName = new HashMap<>();
 
     ModuleIR(String moduleName, String moduleTextRaw) {
@@ -18,7 +25,7 @@ public class ModuleIR {
         this.FunctionsToName = new HashMap<>();
     }
 
-    public void addNameToFunction(String name,FunctionIR function) {
+    public void addNameToFunction(String name, FunctionIR function) {
         NameToFunctions.putIfAbsent(name, function);
     }
 
@@ -26,7 +33,7 @@ public class ModuleIR {
         return NameToFunctions.get(name);
     }
 
-    public void addFunctionToName(String name,FunctionIR function) {
+    public void addFunctionToName(String name, FunctionIR function) {
         FunctionsToName.putIfAbsent(function, name);
     }
 

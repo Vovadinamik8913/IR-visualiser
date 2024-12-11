@@ -7,6 +7,8 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.ir.visualiser.parser.ModuleIR;
+
 @Entity
 @Table(name = "ir")
 @Getter
@@ -28,6 +30,9 @@ public class Ir {
     private Ir parent;
     @OneToMany @JoinColumn(name = "id")
     private List<Ir> children;
+    @Setter
+    @OneToOne @JoinColumn(name = "id")
+    private ModuleIR module;
 
     public Ir(String filename) {
         this.optimization = "init";
