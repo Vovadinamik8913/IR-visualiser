@@ -2,7 +2,7 @@ package ru.ir.visualiser.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,16 +21,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/files")
 public class MainController {
-    @Autowired
-    private IrService irService;
-
-    public MainController() {
-        irService = new IrService();
-    }
+    private final IrService irService;
 
     private void generate(String optPath, Ir ir) throws IOException {
         if (Opt.validateOpt(optPath)) {
@@ -53,16 +50,15 @@ public class MainController {
         String optPath = Config.getInstance().getOptsPath()[opt];
 
         Ir ir = new Ir(filename);
-        ir.setIrPath(path + "/ir_files/" + folderName);
-        ir.setSvgPath(path + "/svg_files/" + folderName);
-        ir.setDotPath(path + "/dot_files/" + folderName);
+        ir.setIrPath(path);
+        ir.setSvgPath(path + "/svg_files");
+        ir.setDotPath(path + "/dot_files");
         irService.create(ir);
 
         FileWorker.createPaths(path,
                 new String[]{
-                        "dot_files/"+folderName,
-                        "ir_files/"+folderName,
-                        "svg_files/"+folderName
+                        "dot_files",
+                        "svg_files"
                 }
         );
         FileWorker.copy(ir.getIrPath(),
@@ -109,8 +105,9 @@ public class MainController {
     }
 
     @PostMapping(value = "/get/functions")
+    @Operation(summary = "Получение всех имен функций")
     @ResponseBody
-    public List<String> getSvgs(
+    public List<String> getFunctions(
             @Parameter(description = "Id of ir", required = true) @RequestParam("file") Long id
     ) {
         Ir ir = irService.getById(id);
