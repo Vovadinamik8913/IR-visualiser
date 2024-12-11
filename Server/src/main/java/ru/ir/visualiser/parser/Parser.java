@@ -4,8 +4,20 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Class that performs parsing of llvm ir files.
+ */
 public class Parser {
 
+    /**
+     * Method to determine at which line char with index is located
+     *
+     * @param text - text to check in
+     *
+     * @param index - index of a char
+     *
+     * @return number of line
+     */
     public static int getLineNumber(String text, int index) {
         int line = 1;
         for (int i = 0; i < index; i++) {
@@ -16,6 +28,17 @@ public class Parser {
         return line;
     }
 
+    /**
+     * Method to parse whole IR module.
+     * Finds name of a module.
+     * Finds every function, cuts their bodies,
+     * Determines range of lines for each function,
+     * and calls parseFunction for each.
+     *
+     * @param input - Text of IR.
+     *
+     * @return ModuleIR
+     */
     public static ModuleIR parseModule(String input) {
         String moduleID = "";
         String regexModuleName = "; ModuleID = (.*)";
@@ -42,6 +65,18 @@ public class Parser {
         return moduleIR;
     }
 
+    /**
+     * Method to parse function.
+     * Finds function name, cuts every block from function body
+     * and calls parseBlock for each.
+     * @param input - Function body
+     *
+     * @param startLine - number of first line of that function(counting from start of module).
+     *
+     * @param endLine - number of last line of that function(counting from start of module).
+     *
+     * @return FunctionIR
+     */
     private static FunctionIR parseFunction(String input, int startLine, int endLine) {
         String regexFuncName = "(define|declare)[^@]* @(\\w*)";
         Pattern patternName = Pattern.compile(regexFuncName);
@@ -71,9 +106,22 @@ public class Parser {
         return functionIR;
     }
 
+    /**
+     * Method for parsing block
+     *
+     * @param input - body of a block
+     *
+     * @param initial - true if block is first in function body(don`t have name)
+     *
+     * @param startLine - number of first line of that block(counting from start of module).
+     *
+     * @param endLine - number of last line of that block(counting from start of module).
+     *
+     * @return - BlockIR
+     */
     private static BlockIR parseBlock(String input, boolean initial, int startLine, int endLine) {
         if (initial) {
-            return new BlockIR(initial, input, startLine, endLine);
+            return new BlockIR(true, input, startLine, endLine);
         }
         BlockIR blockIR = new BlockIR(false, input, startLine, endLine);
         String regexId = "(\\d+):";

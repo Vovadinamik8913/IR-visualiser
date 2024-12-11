@@ -41,9 +41,10 @@ public class Ir {
         this.children = new ArrayList<>();
     }
 
-    public Ir(String optimization, String filename) {
+    public Ir(Ir parent, String optimization) {
+        this.parent = parent;
         this.optimization = optimization;
-        this.filename = filename;
+        this.filename = optimization;
         this.parent = null;
         this.children = new ArrayList<>();
     }

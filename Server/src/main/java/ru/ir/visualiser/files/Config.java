@@ -23,14 +23,10 @@ public class Config {
         return instance;
     }
 
-    public static void deserializeFromJson() {
+    public static void deserializeFromJson() throws IOException {
         String filepath = "irvis.json";
         ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            instance = objectMapper.readValue(new File(filepath), Config.class);
-        } catch (IOException e) {
-            e.getMessage();
-        }
+        instance = objectMapper.readValue(new File(filepath), Config.class);
     }
 
 }

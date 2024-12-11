@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import java.util.*;
 
+/**
+ * Class that holds a ModuleIr
+ * with some info about it.
+ */
 @Entity
 @Table(name = "module")
 public class ModuleIR {

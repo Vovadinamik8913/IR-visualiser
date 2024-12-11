@@ -15,7 +15,7 @@ public class Svg {
         String name = filename.substring(0, filename.lastIndexOf("."));
         ProcessBuilder processBuilder = new ProcessBuilder(
                 "dot", "-Tsvg", "-o", name + ".svg",
-                "../../" + dotPath + "/" + filename
+                "../" + dotPath + "/" + filename
         );
         processBuilder.directory(svgDir);
         processBuilder.inheritIO();

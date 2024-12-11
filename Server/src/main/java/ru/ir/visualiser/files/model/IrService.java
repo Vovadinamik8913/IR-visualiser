@@ -1,17 +1,17 @@
 package ru.ir.visualiser.files.model;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import ru.ir.visualiser.parser.ModuleIR;
 
 @Service
+@RequiredArgsConstructor
 public class IrService {
 
-    @Autowired
-    private IrRepository irRepository;
-    @Autowired
-    private ModuleRepository moduleRepository;
+    private  final IrRepository irRepository;
+    private  final ModuleRepository moduleRepository;
 
     public void create(Ir ir, ModuleIR module) {
         ir.setModule(module);
