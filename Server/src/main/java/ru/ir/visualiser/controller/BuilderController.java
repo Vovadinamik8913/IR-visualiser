@@ -4,7 +4,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import ru.ir.visualiser.files.Config;
 import ru.ir.visualiser.files.FileWorker;
@@ -16,17 +19,11 @@ import ru.ir.visualiser.files.model.IrService;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/files")
-public class MainController {
+@RequestMapping("/files/build")
+public class BuilderController {
     private final IrService irService;
 
     private void generate(String optPath, Ir ir) throws IOException {
@@ -70,7 +67,7 @@ public class MainController {
     }
 
     @Operation(summary = "Создание svg и dot по пути до ir файла на сервере")
-    @PostMapping(value = "/build/path")
+    @PostMapping(value = "/path")
     public ResponseEntity<Long> buildSVGByPath(
             @Parameter(description = "Folder", required = true) @RequestParam("folder") String folder,
             @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt,
@@ -88,7 +85,7 @@ public class MainController {
     }
 
     @Operation(summary = "Создание svg и dot по переданному файлу")
-    @PostMapping(value = "/build/file")
+    @PostMapping(value = "/file")
     public ResponseEntity<Long> buildSVGByFile(
             @Parameter(description = "Folder", required = true) @RequestParam("folder") String folder,
             @Parameter(description = "Opt", required = true) @RequestParam("opt") int opt,
@@ -103,41 +100,4 @@ public class MainController {
         }
         return ResponseEntity.ofNullable(null);
     }
-
-    @PostMapping(value = "/get/functions")
-    @Operation(summary = "Получение всех имен функций")
-    @ResponseBody
-    public List<String> getFunctions(
-            @Parameter(description = "Id of ir", required = true) @RequestParam("file") Long id
-    ) {
-        Ir ir = irService.getById(id);
-        List<String> list = new ArrayList<>();
-        File file = new File(ir.getSvgPath());
-        if (file.exists()) {
-            for (File f : Objects.requireNonNull(file.listFiles())) {
-                String name = f.getName();
-                list.add(name.substring(name.indexOf(".") + 1, name.lastIndexOf(".")));
-            }
-        }
-        return list;
-    }
-
-    @Operation(summary = "Получение svg по имени функции")
-    @PostMapping(value = "/get/svg")
-    @ResponseBody
-    public ResponseEntity<byte[]> getSvg(
-            @Parameter(description = "Id of ir", required = true) @RequestParam("file") Long id,
-            @Parameter(description = "Function name", required = true) @RequestParam("function") String functionName
-    ) {
-        Ir ir = irService.getById(id);
-        String path = ir.getSvgPath() + "/." + functionName + ".svg";
-        try {
-            Path dirPath = Paths.get(path);
-            return ResponseEntity.ok(Files.readAllBytes(dirPath));
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-        return ResponseEntity.ofNullable(null);
-    }
-
 }
