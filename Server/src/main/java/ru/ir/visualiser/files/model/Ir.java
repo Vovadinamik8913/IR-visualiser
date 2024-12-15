@@ -30,9 +30,9 @@ public class Ir {
     private Ir parent;
     @OneToMany @JoinColumn(name = "id")
     private List<Ir> children;
-    @Setter
-    @OneToOne @JoinColumn(name = "id")
-    private ModuleIR module;
+//    @Setter
+//    @OneToOne @JoinColumn(name = "id")
+//    private ModuleIR module;
 
     public Ir(String filename) {
         this.optimization = "init";

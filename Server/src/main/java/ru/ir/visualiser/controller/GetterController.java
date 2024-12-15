@@ -29,7 +29,7 @@ public class GetterController {
     public List<String> getFunctions(
             @Parameter(description = "Id of ir", required = true) @RequestParam("file") Long id
     ) {
-        Ir ir = irService.getById(id);
+        Ir ir = irService.get(id);
         List<String> list = new ArrayList<>();
         File file = new File(ir.getSvgPath());
         if (file.exists()) {
@@ -48,7 +48,7 @@ public class GetterController {
             @Parameter(description = "Id of ir", required = true) @RequestParam("file") Long id,
             @Parameter(description = "Function name", required = true) @RequestParam("function") String functionName
     ) {
-        Ir ir = irService.getById(id);
+        Ir ir = irService.get(id);
         String path = ir.getSvgPath() + "/." + functionName + ".svg";
         try {
             Path dirPath = Paths.get(path);

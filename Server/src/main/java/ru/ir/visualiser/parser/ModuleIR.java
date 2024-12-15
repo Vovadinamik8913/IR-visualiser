@@ -8,13 +8,13 @@ import java.util.*;
  * Class that holds a ModuleIr
  * with some info about it.
  */
-@Entity
-@Table(name = "module")
+//@Entity
+//@Table(name = "module")
 public class ModuleIR {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+//    @Column(name = "id")
+//    private Long id;
 
     @Getter
     private String moduleName;

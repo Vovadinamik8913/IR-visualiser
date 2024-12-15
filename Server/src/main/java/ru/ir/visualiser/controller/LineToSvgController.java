@@ -34,8 +34,7 @@ public class LineToSvgController {
             @Parameter(description = "Номер строки") @RequestParam("line") int line,
             @Parameter(description = "Id of ir") @RequestParam("file") Long id
             ) {
-        Ir ir = irService.getById(id);
-        ModuleIR module = ir.getModule();
+        ModuleIR module = irService.getModule(id);
 
         Collection<FunctionIR> functions = module.getFunctions();
         FunctionIR function = null;

@@ -57,7 +57,6 @@ public class BuilderController {
         ir.setDotPath(path + "/dot_files");
 
         ModuleIR module = Parser.parseModule(new String(content, StandardCharsets.UTF_8));
-        ir.setModule(module);
 
         irService.create(ir, module);
 

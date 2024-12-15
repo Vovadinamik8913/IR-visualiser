@@ -6,21 +6,42 @@ import org.springframework.stereotype.Service;
 
 import ru.ir.visualiser.parser.ModuleIR;
 
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class IrService {
 
     private  final IrRepository irRepository;
-    private  final ModuleRepository moduleRepository;
+
+    /**
+     * Temporary replacement, storing parsed modules in memory for now.
+     */
+    private final Map<Long, ModuleIR> modules = new java.util.HashMap<>();
 
     public void create(Ir ir, ModuleIR module) {
-        ir.setModule(module);
         irRepository.save(ir);
-        moduleRepository.save(module);
+        modules.put(ir.getId(), module);
     }
 
-    public Ir getById(Long id) {
+    /**
+     * Get ir by id
+     *
+     * @param id - id of ir
+     * @return - ir
+     */
+    public Ir get(Long id) {
         return irRepository.findById(id).orElse(null);
+    }
+
+    /**
+     * Get module by the id of ir
+     *
+     * @param id - id of module
+     * @return - module
+     */
+    public ModuleIR getModule(Long id) {
+        return modules.get(id);
     }
 
     public void update(Ir ir) {
