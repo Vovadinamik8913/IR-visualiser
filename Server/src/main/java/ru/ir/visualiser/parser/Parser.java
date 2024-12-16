@@ -1,6 +1,7 @@
 package ru.ir.visualiser.parser;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,7 +40,7 @@ public class Parser {
      *
      * @return ModuleIR
      */
-    public static ModuleIR parseModule(String input) {
+    public static ModuleIR parseModule(String input, Iterable<String> dotFiles) {
         String moduleID = "";
         String regexModuleName = "; ModuleID = (.*)";
         Pattern patternName = Pattern.compile(regexModuleName);
@@ -51,6 +52,7 @@ public class Parser {
         Pattern patternFunctions = Pattern.compile(regexFunc);
         matcher = patternFunctions.matcher(input);
 
+
         ModuleIR moduleIR = new ModuleIR(moduleID, input);
         ArrayList<FunctionIR> functions = new ArrayList<>();
 
@@ -59,14 +61,29 @@ public class Parser {
         }
 
         for (FunctionIR function : functions) {
-            moduleIR.addNameToFunction(function.getFunctionName(), function);
-            moduleIR.addFunctionToName(function.getFunctionName(), function);
+            moduleIR.addFunction(function);
         }
+
+        for (String dotFile : dotFiles) {
+            Dot dot = parseDot(dotFile);
+            moduleIR.addNameToDot(dot.getFunctionName(), dot);
+        }
+
         return moduleIR;
     }
 
     public static Dot parseDot(String input) {
-        Dot dot = new Dot();
+        Dot dot;
+
+        String regexName = "digraph \"CFG for '(.*)' function\"";
+        Pattern patternName = Pattern.compile(regexName);
+        Matcher matcherName = patternName.matcher(input);
+        if (matcherName.find()) {
+            dot = new Dot(matcherName.group(1));
+        } else {
+            throw new IllegalArgumentException("Can't find name of the function in dot file");
+        }
+
         String regexId = "(Node0x[0-9a-f]+)\\s*\\[[^]]*label=\"\\{([^:]+)";
         Pattern patternId = Pattern.compile(regexId);
         Matcher matcher = patternId.matcher(input);

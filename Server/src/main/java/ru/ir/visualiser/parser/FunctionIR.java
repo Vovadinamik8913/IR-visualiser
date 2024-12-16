@@ -1,39 +1,28 @@
 package ru.ir.visualiser.parser;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Class that holds a FunctionIr
  * with some info about it.
  */
+@RequiredArgsConstructor
 public class FunctionIR {
     @Getter
     private final String functionName;
-    private final List<String> parameters;
+    private final List<String> parameters = new java.util.ArrayList<>();
     @Getter
     private final String functionTextRaw;
     @Getter
-    private final List<BlockIR> blocks;
+    private final List<BlockIR> blocks = new java.util.ArrayList<>();
     @Getter
-    private int startLine;
+    private final int startLine;
     @Getter
-    private int endLine;
-
-
-
-    public FunctionIR(String functionName, String functionTextRaw, int startLine, int endLine) {
-        this.functionName = functionName;
-        this.parameters = new ArrayList<>();
-        this.functionTextRaw = functionTextRaw;
-        this.blocks = new ArrayList<>();
-        this.startLine = startLine;
-        this.endLine = endLine;
-
-    }
+    private final int endLine;
 
     public void addParameter(String parameter) {
         parameters.add(parameter);

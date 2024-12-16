@@ -1,12 +1,18 @@
 package ru.ir.visualiser.parser;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.util.Map;
 
 /**
  * Class that holds dot representation of IR.
  * Holds svg ids mappings to label.
  */
+@RequiredArgsConstructor
 public class Dot {
+    @Getter
+    private final String functionName;
     private final Map<String, String> svgIdToLabel = new java.util.HashMap<>();
     private final Map<String, String> labelToSvgId = new java.util.HashMap<>();
 

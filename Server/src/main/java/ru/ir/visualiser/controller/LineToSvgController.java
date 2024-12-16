@@ -23,7 +23,7 @@ public class LineToSvgController {
      *Method to get svg from line
      *
      * @param line - line number in .ll file
-     * @param folder - folder of current working project
+     * @param id - folder of current working project
      *
      * @return - String, name of the function
      */
@@ -41,10 +41,11 @@ public class LineToSvgController {
         for (FunctionIR functionNow : functions) {
             if (functionNow.getStartLine() <= line && functionNow.getEndLine() >= line) {
                 function = functionNow;
+                break;
             }
         }
         if (function == null) {
-            System.out.println("Function not found");
+            System.err.println("Function not found");
             return null;
         }
 

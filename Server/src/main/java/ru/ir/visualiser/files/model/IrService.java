@@ -3,10 +3,8 @@ package ru.ir.visualiser.files.model;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import ru.ir.visualiser.parser.ModuleIR;
-
 import java.util.Map;
+import ru.ir.visualiser.parser.ModuleIR;
 
 @Service
 @RequiredArgsConstructor
