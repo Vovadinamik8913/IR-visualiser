@@ -47,7 +47,7 @@ public class Parser {
         if (matcher.find()) {
             moduleID = matcher.group(1);
         }
-        String regexFunc = "(; Function Attrs: .*\\n)?(define[\\s\\S]*?\\}|declare.*\\n)";
+        String regexFunc = "(; Function Attrs: .*\\n)?(define[\\s\\S]*?}|declare.*\\n)";
         Pattern patternFunctions = Pattern.compile(regexFunc);
         matcher = patternFunctions.matcher(input);
 
@@ -63,6 +63,17 @@ public class Parser {
             moduleIR.addFunctionToName(function.getFunctionName(), function);
         }
         return moduleIR;
+    }
+
+    public static Dot parseDot(String input) {
+        Dot dot = new Dot();
+        String regexId = "(Node0x[0-9a-f]+)\\s*\\[[^]]*label=\"\\{([^:]+)";
+        Pattern patternId = Pattern.compile(regexId);
+        Matcher matcher = patternId.matcher(input);
+        while (matcher.find()) {
+            dot.addSvgIdToLabel(matcher.group(1), matcher.group(2));
+        }
+        return dot;
     }
 
     /**
@@ -89,7 +100,7 @@ public class Parser {
 
         FunctionIR functionIR = new FunctionIR(functionID, input, startLine, endLine);
 
-        String regexBlock = "(\\{[\\s\\S]*?(?:\\n\\n|}))|(\\d+:[\\s\\S]*?(?:\\n\\n|\\n\\}))";
+        String regexBlock = "(\\{[\\s\\S]*?(?:\\n\\n|}))|(\\d+:[\\s\\S]*?(?:\\n\\n|\\n}))";
         Pattern patternBlock = Pattern.compile(regexBlock);
         matcher = patternBlock.matcher(input);
         while (matcher.find()) {

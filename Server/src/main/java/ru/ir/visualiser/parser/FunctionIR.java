@@ -12,17 +12,15 @@ import java.util.List;
  */
 public class FunctionIR {
     @Getter
-    private String functionName;
-    private List<String> parameters;
+    private final String functionName;
+    private final List<String> parameters;
     @Getter
-    private String functionTextRaw;
+    private final String functionTextRaw;
     @Getter
-    private List<BlockIR> blocks;
+    private final List<BlockIR> blocks;
     @Getter
-    @Setter
     private int startLine;
     @Getter
-    @Setter
     private int endLine;
 
 
