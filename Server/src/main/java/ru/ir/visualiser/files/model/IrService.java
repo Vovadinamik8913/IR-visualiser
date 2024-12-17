@@ -17,7 +17,7 @@ public class IrService {
     /**
      * Temporary replacement, storing parsed modules in memory for now.
      */
-    private final Map<Long, ModuleIR> modules = new java.util.HashMap<>();
+    private final Map<Long, ModuleIR> modules;
 
     public void create(Ir ir, ModuleIR module) {
         irRepository.save(ir);
