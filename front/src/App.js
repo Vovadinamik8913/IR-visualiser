@@ -8,7 +8,6 @@ function App() {
     const [llContent, setLlContent] = useState(null); // Содержимое .ll файла
     const [listOfFunctions, setListOfFunctions] = useState([]);
     const [svgContent, setSvgContent] = useState(''); // Содержимое SVG
-    const [folderName, setFolderName] = useState('');
     const [funcFromLine, setFuncFromLine] = useState('');
     const [irId, setIrId] = useState(0);
 
@@ -29,7 +28,6 @@ function App() {
 
 
     const handleDoneRequest = async (folder, file) => {
-        setFolderName(folder);
         try {
             const buildFormData = new FormData();
             buildFormData.append("folder", folder);
@@ -54,9 +52,9 @@ function App() {
                 }
                 setIrId(id);
 
-                if (irId) {
+                if (id) {
                     const getFunctionsFormData = new FormData();
-                    getFunctionsFormData.append("file", irId);
+                    getFunctionsFormData.append("file", id);
 
                     const getSvgsResponse = await fetch('http://localhost:8080/files/get/functions', {
                         method: 'POST',
@@ -71,18 +69,6 @@ function App() {
         } catch (error) {
             console.error('Ошибка запроса:', error);
             alert('Произошла ошибка при выполнении запроса "/build/file"');
-        }
-
-        try {
-            const parseFormData = new FormData();
-            parseFormData.append("id", irId);
-            await fetch('http://localhost:8080/fromline/parse', {
-                method: 'POST',
-                body: parseFormData,
-            });
-        } catch (error) {
-            console.error('Ошибка запроса:', error);
-            alert('Произошла ошибка при выполнении запроса "/fromline/parse"');
         }
     };
 
@@ -108,7 +94,7 @@ function App() {
     const handleLineClick = async (index) => {
         try {
             const lineFormData = new FormData();
-            lineFormData.append("folder", folderName);
+            lineFormData.append("file", irId);
             lineFormData.append("line", index);
             const svgResponse = await fetch('http://localhost:8080/fromline/get/svg', {
                 method: 'POST',
@@ -120,7 +106,7 @@ function App() {
             try {
                 const svgFormData = new FormData();
                 svgFormData.append("file", irId);
-                svgFormData.append("function", funcFromLine);
+                svgFormData.append("function", svgName);
                 const svgResponse = await fetch('http://localhost:8080/files/get/svg', {
                     method: 'POST',
                     body: svgFormData,
@@ -128,7 +114,6 @@ function App() {
                 const svgText = await svgResponse.text();
                 console.log(svgResponse);
                 setSvgContent(svgText);
-                setFuncFromLine('');
             } catch (error) {
                 console.error('Ошибка запроса:', error);
                 alert('Произошла ошибка при выполнении запроса');
