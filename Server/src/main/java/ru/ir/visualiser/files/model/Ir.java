@@ -7,8 +7,6 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.ir.visualiser.parser.ModuleIR;
-
 @Entity
 @Table(name = "ir")
 @Getter

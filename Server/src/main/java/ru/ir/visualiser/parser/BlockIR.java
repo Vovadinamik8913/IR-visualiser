@@ -1,4 +1,6 @@
 package ru.ir.visualiser.parser;
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,19 +10,16 @@ import lombok.Setter;
  *
  */
 public class BlockIR {
-    private boolean initial;
-    private String textRaw;
-    @Setter @Getter
-    private String labelIR;
-    @Setter @Getter
-    private String svgID;
+    private final String textRaw;
     @Getter
-    private int startLine;
+    private final Optional<String> label;
     @Getter
-    private int endLine;
+    private final int startLine;
+    @Getter
+    private final int endLine;
 
-    BlockIR(boolean initial, String textRaw, int startLine, int endLine) {
-        this.initial = initial;
+    BlockIR(Optional<String> label, String textRaw, int startLine, int endLine) {
+        this.label = label;
         this.textRaw = textRaw;
         this.startLine = startLine;
         this.endLine = endLine;

@@ -1,7 +1,7 @@
 package ru.ir.visualiser.parser;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -122,12 +122,12 @@ public class Parser {
         matcher = patternBlock.matcher(input);
         while (matcher.find()) {
             if (matcher.group(1) != null) {
-                functionIR.addBlock(parseBlock(matcher.group(1), true,
+                functionIR.addBlock(parseBlock(matcher.group(1),
                         startLine + getLineNumber(input, matcher.start()),
                         startLine + getLineNumber(input, matcher.end())));
                 continue;
             }
-            functionIR.addBlock(parseBlock(matcher.group(2), false,
+            functionIR.addBlock(parseBlock(matcher.group(2),
                     startLine + matcher.start(), startLine + matcher.end()));
 
         }
@@ -147,17 +147,14 @@ public class Parser {
      *
      * @return - BlockIR
      */
-    private static BlockIR parseBlock(String input, boolean initial, int startLine, int endLine) {
-        if (initial) {
-            return new BlockIR(true, input, startLine, endLine);
-        }
-        BlockIR blockIR = new BlockIR(false, input, startLine, endLine);
+    private static BlockIR parseBlock(String input, int startLine, int endLine) {
         String regexId = "(\\d+):";
         Pattern patternId = Pattern.compile(regexId);
         Matcher matcher = patternId.matcher(input);
+        Optional<String> label = Optional.empty();
         if (matcher.find()) {
-            blockIR.setLabelIR(matcher.group(1));
+            label = Optional.of(matcher.group(1));
         }
-        return blockIR;
+        return new BlockIR(label, input, startLine, endLine);
     }
 }

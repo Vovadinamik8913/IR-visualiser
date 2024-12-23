@@ -1,10 +1,14 @@
 package ru.ir.visualiser.parser;
 
+import java.util.Collection;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Class that holds a FunctionIr
@@ -17,8 +21,7 @@ public class FunctionIR {
     private final List<String> parameters = new java.util.ArrayList<>();
     @Getter
     private final String functionTextRaw;
-    @Getter
-    private final List<BlockIR> blocks = new java.util.ArrayList<>();
+    private final Map<Optional<String>, BlockIR> labelToBlock = new java.util.HashMap<>();
     @Getter
     private final int startLine;
     @Getter
@@ -29,7 +32,26 @@ public class FunctionIR {
     }
 
     public void addBlock(BlockIR block) {
-        blocks.add(block);
+        labelToBlock.put(block.getLabel(), block);
+    }
+
+    /**
+     * Get block by label
+     *
+     * @param label - label
+     *
+     * @return - block
+     */
+    public BlockIR getBlock(Optional<String> label) {
+        BlockIR block = labelToBlock.get(label);
+        if (block == null) {
+            return labelToBlock.get(Optional.empty());
+        }
+        return labelToBlock.get(label);
+    }
+
+    public Collection<BlockIR> getBlocks() {
+        return labelToBlock.values();
     }
 
 }
