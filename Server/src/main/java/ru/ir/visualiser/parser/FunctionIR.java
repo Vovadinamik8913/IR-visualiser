@@ -36,7 +36,7 @@ public class FunctionIR {
     }
 
     /**
-     * Get block by label
+     * Get block by label.
      *
      * @param label - label
      *

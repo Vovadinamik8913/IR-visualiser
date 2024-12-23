@@ -72,6 +72,14 @@ public class Parser {
         return moduleIR;
     }
 
+    /**
+     * Method to parse whole dot file.
+     * Finds svg id to label mapping.
+     *
+     * @param input - Text of dot.
+     *
+     * @return Dot
+     */
     public static Dot parseDot(String input) {
         Dot dot;
 

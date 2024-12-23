@@ -3,18 +3,15 @@ package ru.ir.visualiser.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.web.bind.annotation.*;
-
+import java.util.Collection;
+import java.util.Optional;
 import ru.ir.visualiser.files.model.IrService;
 import ru.ir.visualiser.parser.FunctionIR;
 import ru.ir.visualiser.parser.ModuleIR;
-
-import java.util.Collection;
-import java.util.Optional;
-
 import ru.ir.visualiser.parser.BlockIR;
 import ru.ir.visualiser.parser.Dot;
+
 
 /**
  * Controller that starts parsing and maps lines to function names.
@@ -37,9 +34,9 @@ public class LineToSvgController {
     @PostMapping(value = "/get/svg")
     @ResponseBody
     public String[] getSvg(
-            @Parameter(description = "Номер строки") @RequestParam("line") int line,
-            @Parameter(description = "Id of ir") @RequestParam("file") Long id
-            ) {
+        @Parameter(description = "Номер строки") @RequestParam("line") int line,
+        @Parameter(description = "Id of ir") @RequestParam("file") Long id
+    ) {
         ModuleIR module = irService.getModule(id);
 
         Collection<FunctionIR> functions = module.getFunctions();
@@ -74,7 +71,7 @@ public class LineToSvgController {
 
     /**
      * Method to get line from svg id.
-     * 
+     *
      * @param svgId - svg id
      * @param id - id of the ir
      * @param function - name of the current function
@@ -85,10 +82,10 @@ public class LineToSvgController {
     @PostMapping(value = "/get/line")
     @ResponseBody
     public int getLine(
-            @Parameter(description = "Id of svg") @RequestParam("id") String svgId,
-            @Parameter(description = "Id of ir") @RequestParam("file") Long id,
-            @Parameter(description = "Function name") @RequestParam("function") String function
-            ) {
+        @Parameter(description = "Id of svg") @RequestParam("id") String svgId,
+        @Parameter(description = "Id of ir") @RequestParam("file") Long id,
+        @Parameter(description = "Function name") @RequestParam("function") String function
+    ) {
         ModuleIR module = irService.getModule(id);
         String label = module.getDot(function).getLabelBySvgId(svgId);
 

@@ -3,7 +3,6 @@ package ru.ir.visualiser.parser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
 import java.util.Collection;
 import java.util.Map;
 

@@ -1,6 +1,6 @@
 package ru.ir.visualiser.parser;
-import java.util.Optional;
 
+import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 

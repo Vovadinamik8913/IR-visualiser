@@ -2,7 +2,6 @@ package ru.ir.visualiser.parser;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
 import java.util.Map;
 import java.util.Optional;
 
@@ -23,7 +22,7 @@ public class Dot {
     }
 
     /**
-     * Method to get label by svg id
+     * Method to get label by svg id.
      *
      * @param svgId - svg id
      *
@@ -34,7 +33,7 @@ public class Dot {
     }
 
     /**
-     * Method to get svg id by label
+     * Method to get svg id by label.
      *
      * @param label - label
      *
