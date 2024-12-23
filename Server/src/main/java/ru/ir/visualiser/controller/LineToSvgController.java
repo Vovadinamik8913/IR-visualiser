@@ -82,9 +82,9 @@ public class LineToSvgController {
      * @return - line number from the beginning of the file
      */
     @Operation(summary = "send line corresponding to a svg id")
-    @PostMapping(value = "/get/lineFromSvgId")
+    @PostMapping(value = "/get/line")
     @ResponseBody
-    public int getLineFromSvgId(
+    public int getLine(
             @Parameter(description = "Id of svg") @RequestParam("id") String svgId,
             @Parameter(description = "Id of ir") @RequestParam("file") Long id,
             @Parameter(description = "Function name") @RequestParam("function") String function
