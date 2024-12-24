@@ -46,9 +46,7 @@ public class TreeController {
         try {
             Opt.optimizeOpt(optPath, parent, child);
             File res = new File(child.getIrPath() + File.separator + child.getFilename());
-            ModuleIR module = Parser.parseModule(new String(Files.readAllBytes(res.toPath()), StandardCharsets.UTF_8));
-            Ir ir = irService.create(child, module);
-            System.out.println(ir.getParent().getId());
+            irService.create(child, null);
             return ResponseEntity.ok(child.getId());
         } catch (IOException e) {
             System.out.println(e.getMessage());
