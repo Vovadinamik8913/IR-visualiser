@@ -1,6 +1,7 @@
 package ru.ir.visualiser.files.llvm;
 
 import ru.ir.visualiser.files.FileWorker;
+import ru.ir.visualiser.files.model.Ir;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,4 +36,20 @@ public class Opt {
         }
     }
 
+    public static boolean optimizeOpt(String opt, Ir parent, Ir result) throws IOException {
+        File dir = new File(result.getIrPath());
+        ProcessBuilder processBuilder = new ProcessBuilder(
+                opt,
+                "-passes=" + result.getFlags(), "-S", ".." + File.separator + parent.getFilename(),  "-o",
+                result.getFilename());
+        processBuilder.directory(dir);
+        processBuilder.inheritIO();
+        Process process = processBuilder.start();
+        try {
+            process.waitFor();
+        } catch (InterruptedException e) {
+            throw new IOException("Interrupted while waiting for process to finish");
+        }
+        return process.exitValue() == 0;
+    }
 }
