@@ -1,6 +1,7 @@
 package ru.ir.visualiser.files;
 
 import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.springframework.cglib.beans.FixedKeySet;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -10,7 +11,7 @@ import java.io.IOException;
 public class FileWorker {
 
     public static void createPath(String path, String foldersOrder) {
-        String[] folders = foldersOrder.split("/");
+        String[] folders = foldersOrder.split(File.separator);
         String newPath = path;
         for (String folder : folders) {
             addFolder(newPath, folder);

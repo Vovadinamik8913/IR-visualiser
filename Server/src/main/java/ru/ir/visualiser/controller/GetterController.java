@@ -49,7 +49,7 @@ public class GetterController {
             @Parameter(description = "Function name", required = true) @RequestParam("function") String functionName
     ) {
         Ir ir = irService.get(id);
-        String path = ir.getSvgPath() + "/." + functionName + ".svg";
+        String path = ir.getSvgPath() + File.separator + "." + functionName + ".svg";
         try {
             Path dirPath = Paths.get(path);
             return ResponseEntity.ok(Files.readAllBytes(dirPath));
