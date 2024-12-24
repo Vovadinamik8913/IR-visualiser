@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class Ir {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    private String optimization;
+    private String flags;
     private String filename;
     @Setter
     private String dotPath;
@@ -23,33 +24,33 @@ public class Ir {
     private String svgPath;
     @Setter
     private String irPath;
-    @OneToOne @JoinColumn(name = "id")
-    @Setter
+    @ManyToOne @JoinColumn(name = "parent_id")
     private Ir parent;
-    @OneToMany @JoinColumn(name = "id")
+    @OneToMany(mappedBy = "parent")
     private List<Ir> children;
 //    @Setter
 //    @OneToOne @JoinColumn(name = "id")
 //    private ModuleIR module;
 
     public Ir(String filename) {
-        this.optimization = "init";
+        this.flags = "init";
         this.filename = filename;
         this.parent = null;
         this.children = new ArrayList<>();
     }
 
-    public Ir(Ir parent, String optimization) {
+    public Ir(Ir parent, String flags) {
         this.parent = parent;
-        this.optimization = optimization;
-        this.filename = optimization;
-        this.parent = null;
+        flags = flags.substring(flags.lastIndexOf("-passes=") + "-passes=".length());
+        this.irPath = parent.getIrPath() + File.separator + flags;
+        this.svgPath = irPath + File.separator + "svg_files";
+        this.dotPath = irPath + File.separator + "dot_files";
+        this.flags = flags;
+        this.filename = flags + ".ll";
         this.children = new ArrayList<>();
     }
 
     public Ir() {
 
     }
-
-
 }

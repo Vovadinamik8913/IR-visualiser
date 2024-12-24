@@ -47,6 +47,10 @@ public class IrService {
     }
 
     public void deleteById(long id) {
-        irRepository.deleteById(id);
+        Ir ir = irRepository.findById(id).orElse(null);
+        if (ir != null) {
+            irRepository.deleteAll(ir.getChildren());
+            irRepository.delete(ir);
+        }
     }
 }
