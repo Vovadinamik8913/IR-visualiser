@@ -2,7 +2,9 @@ package ru.ir.visualiser.parser;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import java.util.*;
+import lombok.RequiredArgsConstructor;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Class that holds a ModuleIr
@@ -10,6 +12,7 @@ import java.util.*;
  */
 //@Entity
 //@Table(name = "module")
+@RequiredArgsConstructor
 public class ModuleIR {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,35 +20,33 @@ public class ModuleIR {
 //    private Long id;
 
     @Getter
-    private String moduleName;
-    private String moduleTextRaw;
-    private Map<String, FunctionIR> NameToFunctions = new HashMap<>();
-    private Map<FunctionIR, String> FunctionsToName = new HashMap<>();
+    private final String moduleName;
+    private final String moduleTextRaw;
+    private final Map<String, FunctionIR> nameToFunctions = new java.util.HashMap<>();
+    private final Map<String, Dot> nameToDot = new java.util.HashMap<>();
 
-    ModuleIR(String moduleName, String moduleTextRaw) {
-        this.moduleName = moduleName;
-        this.moduleTextRaw = moduleTextRaw;
-        this.NameToFunctions = new HashMap<>();
-        this.FunctionsToName = new HashMap<>();
+
+    public void addFunction(FunctionIR function) {
+        nameToFunctions.putIfAbsent(function.getFunctionName(), function);
     }
 
-    public void addNameToFunction(String name, FunctionIR function) {
-        NameToFunctions.putIfAbsent(name, function);
+    public void addNameToDot(String name, Dot dot) {
+        nameToDot.putIfAbsent(name, dot);
     }
 
     public FunctionIR getFunction(String name) {
-        return NameToFunctions.get(name);
+        return nameToFunctions.get(name);
     }
 
-    public void addFunctionToName(String name, FunctionIR function) {
-        FunctionsToName.putIfAbsent(function, name);
-    }
-
-    public String getNameByFunction(FunctionIR function) {
-        return FunctionsToName.get(function);
+    public Dot getDot(String name) {
+        return nameToDot.get(name);
     }
 
     public Collection<FunctionIR> getFunctions() {
-        return NameToFunctions.values();
+        return nameToFunctions.values();
+    }
+
+    public Collection<Dot> getDots() {
+        return nameToDot.values();
     }
 }
