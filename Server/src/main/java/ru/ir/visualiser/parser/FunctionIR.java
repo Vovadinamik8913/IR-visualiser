@@ -1,48 +1,57 @@
 package ru.ir.visualiser.parser;
 
+import java.util.Collection;
+
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Class that holds a FunctionIr
  * with some info about it.
  */
+@RequiredArgsConstructor
 public class FunctionIR {
     @Getter
-    private String functionName;
-    private List<String> parameters;
+    private final String functionName;
+    private final List<String> parameters = new java.util.ArrayList<>();
     @Getter
-    private String functionTextRaw;
+    private final String functionTextRaw;
+    private final Map<Optional<String>, BlockIR> labelToBlock = new java.util.HashMap<>();
     @Getter
-    private List<BlockIR> blocks;
+    private final int startLine;
     @Getter
-    @Setter
-    private int startLine;
-    @Getter
-    @Setter
-    private int endLine;
-
-
-
-    public FunctionIR(String functionName, String functionTextRaw, int startLine, int endLine) {
-        this.functionName = functionName;
-        this.parameters = new ArrayList<>();
-        this.functionTextRaw = functionTextRaw;
-        this.blocks = new ArrayList<>();
-        this.startLine = startLine;
-        this.endLine = endLine;
-
-    }
+    private final int endLine;
 
     public void addParameter(String parameter) {
         parameters.add(parameter);
     }
 
     public void addBlock(BlockIR block) {
-        blocks.add(block);
+        labelToBlock.put(block.getLabel(), block);
+    }
+
+    /**
+     * Get block by label.
+     *
+     * @param label - label
+     *
+     * @return - block
+     */
+    public BlockIR getBlock(Optional<String> label) {
+        BlockIR block = labelToBlock.get(label);
+        if (block == null) {
+            return labelToBlock.get(Optional.empty());
+        }
+        return labelToBlock.get(label);
+    }
+
+    public Collection<BlockIR> getBlocks() {
+        return labelToBlock.values();
     }
 
 }

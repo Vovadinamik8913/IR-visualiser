@@ -20,7 +20,10 @@ import ru.ir.visualiser.files.model.IrService;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 
 import ru.ir.visualiser.parser.ModuleIR;
 import ru.ir.visualiser.parser.Parser;
@@ -56,10 +59,6 @@ public class BuilderController {
         ir.setSvgPath(path + "/svg_files");
         ir.setDotPath(path + "/dot_files");
 
-        ModuleIR module = Parser.parseModule(new String(content, StandardCharsets.UTF_8));
-
-        irService.create(ir, module);
-
         FileWorker.createPaths(path,
                 new String[]{
                         "dot_files",
@@ -71,6 +70,17 @@ public class BuilderController {
                 content
         );
         generate(optPath, ir);
+
+        String moduleContent = new String(content, StandardCharsets.UTF_8);
+        DirectoryStream<Path> dotsDirectory = Files.newDirectoryStream(Path.of(ir.getDotPath()));
+        List<String> dots = new java.util.ArrayList<>();
+        for (Path dotPath : dotsDirectory) {
+            dots.add(Files.readString(dotPath));
+        }
+
+        ModuleIR module = Parser.parseModule(moduleContent, dots);
+        irService.create(ir, module);
+
         return ir;
     }
 
