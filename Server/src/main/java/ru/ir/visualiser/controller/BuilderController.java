@@ -56,8 +56,8 @@ public class BuilderController {
 
         Ir ir = new Ir(filename);
         ir.setIrPath(path);
-        ir.setSvgPath(path + "/svg_files");
-        ir.setDotPath(path + "/dot_files");
+        ir.setSvgPath(path + File.separator + "svg_files");
+        ir.setDotPath(path + File.separator + "dot_files");
 
         FileWorker.createPaths(path,
                 new String[]{
